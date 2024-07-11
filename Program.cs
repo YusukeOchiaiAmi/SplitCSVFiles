@@ -5,10 +5,17 @@
         DirectoryInfo dirInfo = new DirectoryInfo("CSV");
         FileInfo[] csvFiles = dirInfo.GetFiles("*.csv");
 
-        foreach (FileInfo csvFile in csvFiles)
+        if (csvFiles.Length == 0)
         {
-            Console.WriteLine($"Processing Split [./CSV/{csvFile.Name}] started...");
-            await SplitCsvFile(csvFile.Name);
+            Console.WriteLine("CSV files cloud not found in [./CSV]");
+        }
+        else
+        {
+            foreach (FileInfo csvFile in csvFiles)
+            {
+                Console.WriteLine($"Processing Split [./CSV/{csvFile.Name}] started...");
+                await SplitCsvFile(csvFile.Name);
+            }
         }
     }
 
