@@ -44,8 +44,8 @@
 
         try
         {
-            //50万行ごとにチェック
-            int checkCount = 5 * 10 * 1000;
+            //10万行ごとにチェック
+            int checkCount = 100 * 1000;
             Console.WriteLine($"Spliting to [{outputFilePath}]");
 
             int count = 0;
