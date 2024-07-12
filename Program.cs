@@ -7,24 +7,34 @@
 
         if (csvFiles.Length == 0)
         {
-            Console.WriteLine("CSV files cloud not found in [./CSV]");
+            Console.WriteLine("CSV files cloud not found in CSV folder.");
         }
         else
         {
             foreach (FileInfo csvFile in csvFiles)
             {
+                Console.WriteLine(
+                    "Do you want to delete the original files after splitting? [y/N]"
+                );
+                string? answer = Console.ReadLine();
+                bool deleteFlag = false;
+                if (answer?.ToLower() == "y")
+                {
+                    deleteFlag = true;
+                }
                 Console.WriteLine($"Processing Split [./CSV/{csvFile.Name}] started...");
-                await SplitCsvFile(csvFile.Name);
+                await SplitCsvFile(csvFile.Name, deleteFlag);
             }
         }
     }
 
-    static async Task SplitCsvFile(string inputFileName)
+    static async Task SplitCsvFile(string inputFileName, bool deleteFlag)
     {
         //1GBごとに分割
         float splitSizeInGB = 1.0f;
         //0.15GBほど余裕を持たせる
         float checkSizeInGB = splitSizeInGB - 0.15f;
+        float gigabyte = 1024f * 1024f * 1024f;
 
         string csvFileName = Path.GetFileNameWithoutExtension(inputFileName);
         string inputFilePath = $"./CSV/{csvFileName}.csv";
@@ -56,7 +66,7 @@
                     if (count == checkCount)
                     {
                         var outputFileInfo = new FileInfo(outputFilePath);
-                        float fileSizeInGB = (float)outputFileInfo.Length / (1024 * 1024 * 1024);
+                        float fileSizeInGB = outputFileInfo.Length / gigabyte;
                         if (fileSizeInGB >= checkSizeInGB)
                         {
                             writer.Close();
@@ -71,7 +81,12 @@
                     }
                 }
             }
-            Console.WriteLine($"Processing Split [./CSV/{inputFileName}] completed...");
+            Console.WriteLine($"Processing Split [{inputFilePath}] completed...");
+            if (deleteFlag)
+            {
+                File.Delete(inputFilePath);
+                Console.WriteLine($"File [{inputFilePath}] has been deleted.");
+            }
         }
         catch (Exception ex)
         {
@@ -80,5 +95,6 @@
             );
             Console.WriteLine("Error Message : " + ex.Message);
         }
+        return;
     }
 }
