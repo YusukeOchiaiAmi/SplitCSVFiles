@@ -40,7 +40,10 @@
         string inputFilePath = $"./CSV/{csvFileName}.csv";
         int outputFileNameSuffix = 1;
         string outputFileName = $"{csvFileName}_split_{outputFileNameSuffix}.csv";
-        string outputFilePath = $"./SPLIT/{outputFileName}";
+        string timeStamp = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
+        string outputDirectory = $"./SPLIT/{timeStamp}";
+        Directory.CreateDirectory(outputDirectory);
+        string outputFilePath = outputDirectory + '/' + outputFileName;
 
         try
         {
@@ -72,7 +75,7 @@
                             writer.Close();
                             outputFileNameSuffix++;
                             outputFileName = $"{csvFileName}_split_{outputFileNameSuffix}.csv";
-                            outputFilePath = $"./SPLIT/{outputFileName}";
+                            outputFilePath = $"./SPLIT/{timeStamp}/{outputFileName}";
                             Console.WriteLine($"Spliting to [{outputFilePath}]");
                             writer = new StreamWriter(outputFilePath, true);
                             writer.WriteLine(header);
